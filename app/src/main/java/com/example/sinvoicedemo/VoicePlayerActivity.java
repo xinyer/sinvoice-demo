@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.sinvoicedemo.voice.VoiceMsg;
 import com.libra.sinvoice.Common;
 import com.libra.sinvoice.LogHelper;
 import com.libra.sinvoice.SinVoicePlayer;
@@ -26,7 +27,7 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
     private EditText mPlayTextView;
 
     private boolean play;
-    private String content = "abcdefghijklmnopqrstuvwxyz1234567890";
+    private String content = "abcdefg1234567890ABCDEFG";
     private String[] contents;
     private int playIndex;
 
@@ -46,7 +47,7 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
         mPlayTextView = (EditText) findViewById(R.id.playtext);
         mPlayTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        contents = splitVoiceMsg(content);
+        contents = VoiceMsg.splitVoiceMsg(content);
 
         final Button playStart = (Button) findViewById(R.id.start_play);
         playStart.setOnClickListener(new OnClickListener() {
@@ -95,21 +96,6 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-    }
-
-    private static final int SPLIT_LEN = 10;
-
-    private static String[] splitVoiceMsg(String msg) {
-        if (msg.length() <= SPLIT_LEN) return new String[] {msg};
-
-        int len = msg.length() / SPLIT_LEN + 1;
-        String [] result = new String[len + 1];
-        for (int i=0; i<len; i++) {
-            if (i == len - 1) result[i] = i + "@" + msg.substring(i*SPLIT_LEN);
-            else result[i] = i + "@" + msg.substring(i*SPLIT_LEN, (i+1)*SPLIT_LEN);
-        }
-        result[len] = "count" + "@" + len;
-        return result;
     }
 
     @Override

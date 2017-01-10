@@ -11,6 +11,10 @@ public class VoiceMsg {
      * 2@zzz
      */
 
+    private static final String SEPARATION = "&@&";
+    private static final String COUNT_KEY = "c0un7";
+    private static final int SPLIT_LEN = 10;
+
     private int count = -1;
     private int desireSum = 0;
     private VoiceMsgListener listener;
@@ -23,10 +27,9 @@ public class VoiceMsg {
 
     public void receiveMsg(String msg) {
         if (msg != null && !msg.equals("")) {
-            String[] strs = msg.split("@");
-            if (strs.length == 0) return;
-
-            if (strs[0].equals("count")) {
+            String[] strs = msg.split(SEPARATION);
+            if (strs.length != 2) return;
+            if (strs[0].equals(COUNT_KEY)) {
                 this.count = Integer.parseInt(strs[1]);
             } else {
                 int index = Integer.parseInt(strs[0]);
@@ -65,5 +68,18 @@ public class VoiceMsg {
         for (int i=0; i<count; i++) {
             desireSum += i;
         }
+    }
+
+    public static String[] splitVoiceMsg(String msg) {
+        if (msg.length() <= SPLIT_LEN) return new String[] {msg};
+
+        int len = msg.length() / SPLIT_LEN + 1;
+        String [] result = new String[len + 1];
+        for (int i=0; i<len; i++) {
+            if (i == len - 1) result[i] = i + SEPARATION + msg.substring(i*SPLIT_LEN);
+            else result[i] = i + SEPARATION + msg.substring(i*SPLIT_LEN, (i+1)*SPLIT_LEN);
+        }
+        result[len] = COUNT_KEY + SEPARATION + len;
+        return result;
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SinVoiceDemo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="info">该演示程序限制了编码和解码的次数，在识别n（n为随机值）次后程序会自动停止识别（如果发送的字符太长程序也不会发送），若想继续使用请重新启动该程序（商业正式版没有这个限制）,作者QQ:29600731。</string>
+    <string name="init_str">abcdefghijklmnopqrstuvwxyz1234567890</string>
+    <string name="input_char">请输入数字、字母和_@</string>
+</resources>

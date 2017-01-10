@@ -9,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.sinvoicedemo.voice.VoiceMsg;
+import com.example.sinvoicedemo.voice.VoiceMsgListener;
 import com.libra.sinvoice.LogHelper;
 import com.libra.sinvoice.SinVoiceRecognition;
 
@@ -27,6 +29,8 @@ public class VoiceRecognizeActivity extends Activity implements SinVoiceRecognit
     private SinVoiceRecognition mRecognition;
     private TextView mRecognisedTextView;
 
+    VoiceMsg voiceMsg = new VoiceMsg();
+
     static {
         System.loadLibrary("sinvoice");
         LogHelper.d(TAG, "sinvoice jnicall loadlibrary");
@@ -43,6 +47,15 @@ public class VoiceRecognizeActivity extends Activity implements SinVoiceRecognit
 
         mRecognisedTextView = (TextView) findViewById(R.id.regtext);
         mHanlder = new RegHandler();
+
+        voiceMsg.setListener(new VoiceMsgListener() {
+            @Override
+            public void onReceiveOver(String msg) {
+
+//                mRecognisedTextView.setText(msg);
+                System.out.println("onReceiverOver:" + msg);
+            }
+        });
 
         Button recognitionStart = (Button) findViewById(R.id.start_reg);
         recognitionStart.setOnClickListener(new OnClickListener() {
@@ -91,7 +104,9 @@ public class VoiceRecognizeActivity extends Activity implements SinVoiceRecognit
                     break;
 
                 case MSG_RECG_END:
-                    mRecognisedTextView.setText(sb.toString());
+                    System.out.println("receive:" + sb.toString());
+                    voiceMsg.receiveMsg(sb.toString());
+                    sb.delete(0, sb.length());
                     break;
 
                 case MSG_PLAY_TEXT:

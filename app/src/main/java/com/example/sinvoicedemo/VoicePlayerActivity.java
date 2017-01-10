@@ -26,7 +26,8 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
     private EditText mPlayTextView;
 
     private boolean play;
-    private String[] content = new String[] {"abcdefghi", "jklmnopq", "rstuvwxyz", "1234567890"};
+    private String content = "abcdefghijklmnopqrstuvwxyz1234567890";
+    private String[] contents;
     private int playIndex;
 
     static {
@@ -45,13 +46,15 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
         mPlayTextView = (EditText) findViewById(R.id.playtext);
         mPlayTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        Button playStart = (Button) findViewById(R.id.start_play);
+        contents = splitVoiceMsg(content);
+
+        final Button playStart = (Button) findViewById(R.id.start_play);
         playStart.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 play = true;
                 playIndex = 0;
-                sendVoice(content[0]);
+                sendVoice(contents[0]);
             }
         });
 
@@ -59,6 +62,7 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
         playStop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                play = false;
                 mSinVoicePlayer.stop();
             }
         });
@@ -80,7 +84,6 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
             int[] tokens = new int[len];
             int maxEncoderIndex = mSinVoicePlayer.getMaxEncoderIndex();
             LogHelper.d(TAG, "maxEncoderIndex:" + maxEncoderIndex);
-//            String encoderText = mPlayTextView.getText().toString();
             for (int i = 0; i < len; i++) {
                 if (maxEncoderIndex < 255) {
                     tokens[i] = Common.DEFAULT_CODE_BOOK.indexOf(msg.charAt(i));
@@ -96,15 +99,16 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
 
     private static final int SPLIT_LEN = 10;
 
-    private String[] splitVoiceMsg(String msg) {
-        if (msg.length() <= SPLIT_LEN) return new String[]{msg};
+    private static String[] splitVoiceMsg(String msg) {
+        if (msg.length() <= SPLIT_LEN) return new String[] {msg};
 
         int len = msg.length() / SPLIT_LEN + 1;
-        String[] result = new String[len];
-        for (int i = 0; i < len; i++) {
-            if (i == len - 1) result[i] = msg.substring(i * SPLIT_LEN);
-            else result[i] = msg.substring(i * SPLIT_LEN, (i + 1) * SPLIT_LEN);
+        String [] result = new String[len + 1];
+        for (int i=0; i<len; i++) {
+            if (i == len - 1) result[i] = i + "@" + msg.substring(i*SPLIT_LEN);
+            else result[i] = i + "@" + msg.substring(i*SPLIT_LEN, (i+1)*SPLIT_LEN);
         }
+        result[len] = "count@" + len;
         return result;
     }
 
@@ -130,8 +134,8 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
     @Override
     public void onSinVoicePlayEnd() {
         mSinVoicePlayer.uninit();
-        playIndex = (playIndex + 1) % content.length;
-        if (play) sendVoice(content[playIndex]);
+        playIndex = (playIndex + 1) % contents.length;
+        if (play) sendVoice(contents[playIndex]);
     }
 
     @Override

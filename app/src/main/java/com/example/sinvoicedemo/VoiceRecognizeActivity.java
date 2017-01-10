@@ -51,8 +51,6 @@ public class VoiceRecognizeActivity extends Activity implements SinVoiceRecognit
         voiceMsg.setListener(new VoiceMsgListener() {
             @Override
             public void onReceiveOver(String msg) {
-
-//                mRecognisedTextView.setText(msg);
                 System.out.println("onReceiverOver:" + msg);
             }
         });

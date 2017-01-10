@@ -108,7 +108,7 @@ public class VoicePlayerActivity extends Activity implements SinVoicePlayer.List
             if (i == len - 1) result[i] = i + "@" + msg.substring(i*SPLIT_LEN);
             else result[i] = i + "@" + msg.substring(i*SPLIT_LEN, (i+1)*SPLIT_LEN);
         }
-        result[len] = "count@" + len;
+        result[len] = "count" + "@" + len;
         return result;
     }
 
